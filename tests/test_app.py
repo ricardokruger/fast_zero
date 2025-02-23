@@ -41,7 +41,7 @@ def test_read_users(client):
     }
 
 
-def test_read_users(client):
+def test_read_user(client):
     response = client.get('/users/1')
 
     assert response.status_code == HTTPStatus.OK
