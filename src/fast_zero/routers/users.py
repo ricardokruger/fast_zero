@@ -122,8 +122,9 @@ def delete_user(
     #     raise HTTPException(
     #         status_code=HTTPStatus.NOT_FOUND, detail='User not found'
     #     )
+
     if current_user.id != user_id:
-        HTTPException(
+        raise HTTPException(
             status_code=HTTPStatus.FORBIDDEN, detail='Not enough permissions'
         )
     db_user = current_user
