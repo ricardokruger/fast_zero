@@ -5,10 +5,14 @@ class Message(BaseModel):
     message: str
 
 
-class UserSchema(BaseModel):
-    username: str
-    email: EmailStr
-    password: str
+class FilterPage(BaseModel):
+    offset: int = 0
+    limit: int = 100
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
 
 
 class UserPublic(BaseModel):
@@ -18,14 +22,11 @@ class UserPublic(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-class UserDB(UserSchema):
-    id: int
+class UserSchema(BaseModel):
+    username: str
+    email: EmailStr
+    password: str
 
 
 class UserList(BaseModel):
     users: list[UserPublic]
-
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str
