@@ -15,22 +15,26 @@ class TodoFactory(factory.Factory):
     user_id = 1
 
 
-def test_create_todo(client, token):
-    response = client.post(
-        '/todos/',
-        headers={'Authorization': f'Bearer {token}'},
-        json={
-            'title': 'Test todo',
-            'description': 'Test todo desciption',
-            'state': 'draft',
-        },
-    )
+def test_create_todo(client, token, mock_db_time):
+    with mock_db_time(model=Todo) as time:
+        response = client.post(
+            '/todos/',
+            headers={'Authorization': f'Bearer {token}'},
+            json={
+                'title': 'Test todo',
+                'description': 'Test todo desciption',
+                'state': 'draft',
+            },
+        )
+
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {
         'id': 1,
         'title': 'Test todo',
         'description': 'Test todo desciption',
         'state': 'draft',
+        'created_at': time.isoformat(),
+        'updated_at': time.isoformat(),
     }
 
 
@@ -144,6 +148,33 @@ def test_list_todos_filter_combined_should_return_5_todos(
     )
 
     assert len(response.json()['todos']) == expected_todos
+
+
+def test_list_todos_should_return_all_excpected_fields(
+    session, client, user, mock_db_time, token
+):
+    with mock_db_time(model=Todo) as time:
+        todo = TodoFactory(user_id=user.id)
+        session.add(todo)
+        session.commit()
+
+    session.refresh(todo)
+    response = client.get(
+        '/todos/',
+        headers={'Authorization': f'Bearer {token}'},
+    )
+    assert response.json() == {
+        'todos': [
+            {
+                'id': todo.id,
+                'title': todo.title,
+                'description': todo.description,
+                'state': todo.state,
+                'created_at': time.isoformat(),
+                'updated_at': time.isoformat(),
+            }
+        ]
+    }
 
 
 def test_patch_todo_error(client, token):
