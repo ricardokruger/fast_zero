@@ -4,6 +4,14 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ DATABASE_URL }}
+      POSTGRES_USER: ${{ POSTGRES_USER }}
+      POSTGRES_DB: ${{ POSTGRES_DB }}
+      POSTGRES_PASSWORD: ${{ POSTGRES_PASSWORD }}
+      SECRET_KEY: ${{ SECRET_KEY }}
+      ALGORITHM: ${{ ALGORITHM }}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${{ ACCESS_TOKEN_EXPIRE_MINUTES }}
 
     steps:
       - name: Copiar arquivos
