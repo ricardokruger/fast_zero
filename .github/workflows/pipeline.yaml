@@ -26,7 +26,7 @@ jobs:
         run: pipx install poetry
       
       - name: Instalar dependências
-        run: ~/.local/bin/poetry install
+        run: poetry install
 
       - name: Executar testes
-        run: ~/.local/bin/poetry run task test
+        run: poetry run task test
